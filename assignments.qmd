@@ -1,5 +1,5 @@
 ---
-title: "Assignnments"
+title: "Assignments"
 ---
 
-- [Assignment 1](assign1.qmd)
+-   [Assignment 1](assign1.qmd)
