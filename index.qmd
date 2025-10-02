@@ -1,11 +1,7 @@
 ---
-title: "Website for Venki's Data Visualization (EPPS 6356) class"
+title: "Venki's website for Data Viz (EPPS 6356) class"
 ---
 
-This is a Quarto website.
+My assignments are under the Assignments tab. 
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
-
-```{r}
-1 + 1
-```
+Thanks for visiting!
