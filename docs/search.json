@@ -1,5 +1,12 @@
 [
   {
+    "objectID": "assign1.html",
+    "href": "assign1.html",
+    "title": "Assignment 1",
+    "section": "",
+    "text": "This is Assignment 1."
+  },
+  {
     "objectID": "about.html",
     "href": "about.html",
     "title": "About",
@@ -12,5 +19,12 @@
     "title": "Venki’s website for Data Viz (EPPS 6356) class",
     "section": "",
     "text": "My assignments are under the Assignments tab.\nThanks for visiting!"
+  },
+  {
+    "objectID": "assignments.html",
+    "href": "assignments.html",
+    "title": "Assignnments",
+    "section": "",
+    "text": "Assignment 1"
   }
 ]
