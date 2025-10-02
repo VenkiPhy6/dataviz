@@ -3,7 +3,7 @@ project:
   output-dir: docs
 
 website:
-  title: "dataviz_website"
+  title: "Venki's DataViz"
   navbar:
     left:
       - href: index.qmd
