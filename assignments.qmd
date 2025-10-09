@@ -3,3 +3,4 @@ title: "Assignments"
 ---
 
 -   [Assignment 1](assign1.qmd)
+-   [Assignment 3](assign3.qmd) 
