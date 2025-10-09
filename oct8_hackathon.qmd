@@ -130,7 +130,7 @@ owidall |>
     geom_text(position=position_dodge(width=0.9), hjust = -0.3, size = 3) +
     theme_minimal() +
     labs(y = 'Country', 
-         x = 'Total Counts (in 100k)', 
+         x = 'Case Counts (in 100k)', 
            title = 'COVID CASE COUNTS IN THE AMERICAS, 2020',
          caption = "**Source**: Hasell, J., Mathieu, E., Beltekian, D. *et al.* *Sci Data* 7, 345 (2020)."
          ) +
