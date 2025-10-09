@@ -4,3 +4,4 @@ title: "Assignments"
 
 -   [Assignment 1](assign1.qmd)
 -   [Assignment 3](assign3.qmd) 
+-   [Assignment 4 - Class Hackathon on Oct 8](oct8_hackathon.qmd)

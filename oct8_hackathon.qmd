@@ -1,0 +1,195 @@
+---
+title: "Assignment 4"
+date: 'Oct 8, 2025'
+author: 'Venkatesh Subramanian'
+---
+
+This assignment is the class hackathon posted on Oct 8. The hackathon requires making charts 1-4 among this using any data available.
+
+![](assets/chart_types.png)
+
+I plan to use the OWID dataset we used in [Assignment 3](assign3.qmd). Since it has several countries I get multiple categories there.
+
+
+```{r libs, echo=FALSE, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(forcats)
+```
+
+```{r get_data}
+## Download COVID data from OWID GitHub
+# owidall = read.csv("https://github.com/owid/covid-19-data/blob/master/public/data/owid-covid-data.csv?raw=true")
+# Save it to save time when rendering
+# saveRDS(owidall, "./data/owidall_assign3.rds")
+owidall = readRDS("./data/owidall_assign3.rds")
+# Deselect cases/rows with OWID
+owidall = owidall[!grepl("^OWID", owidall$iso_code), ]
+owidall <- owidall |> mutate(date=as.Date(date))
+```
+
+## Chart 1 - Comparison among items with two variables per item.
+
+
+```{r plot1, warning=FALSE}
+owidall |>
+  filter(year(date)==2020) |> 
+  group_by(continent) |> 
+  summarise(case_cnt=sum(new_cases, na.rm=TRUE), 
+            death_cnt=sum(new_deaths, na.rm=TRUE),
+            .groups='drop') |> 
+  pivot_longer(cols = c(case_cnt, death_cnt), names_to = 'metric') |> 
+  mutate(value = round(value/10^6, 1), 
+         metric = case_when(metric == 'case_cnt' ~ "Case Count",
+                            metric=='death_cnt' ~ "Death Count")) |> 
+  ggplot(aes(x=continent, fill=metric, y=value, label=value, group=metric)) +
+    geom_col(position='dodge') +
+    geom_text(position=position_dodge(width=0.9), vjust = -0.5) +
+    theme_minimal() +
+    labs(x = 'Continent', 
+         y = 'Total Counts\n(in millions)', 
+         fill='Metric', 
+         title = 'COVID BURDEN ACROSS CONTINENTS, 2020',
+         caption = "**Note**: Russia and UK counts are included within Europe.<br><br>**Source**: Hasell, J., Mathieu, E., Beltekian, D. *et al.* *Sci Data* 7, 345 (2020)."
+         ) +
+    scale_fill_brewer(palette="Dark2") +
+    scale_y_continuous(expand=c(0, 2)) +
+    theme(legend.position='top', 
+            panel.grid = element_blank(), 
+            axis.text.y=element_blank(),
+            axis.text.x=element_text(vjust = 6, size=10),
+            axis.title.x=element_text(vjust = 3.9),
+            plot.margin = margin(t = 15, r = 10, b = 15, l = 20),
+            plot.title = element_text(hjust=-0.15),
+            text = element_text(family="Palantino"),
+            plot.caption=ggtext::element_markdown(hjust = 0, size=8),
+            )
+```
+
+Notice the following embellishments:
+1. Use of custom Palantino font
+2. Legend position and titling
+3. Caption with notes and source.
+4. Y axis title rotated.
+5. Use of Dark2 color palette. The default color makes death count come up in blue instead of red, the color typically associated with death.
+6. Attempt was made to align title and y axis title.
+
+## Chart 2 - Comparison among items with one variable per iterm but many (nested) categories
+
+```{r plot2, warning=FALSE}
+owidall |>
+  filter(year(date)==2020) |> 
+  group_by(continent, location) |> 
+  summarise(case_cnt=round(sum(new_cases, na.rm=TRUE)/10^5, 1), 
+            .groups = 'drop') |>
+  group_by(continent) |> 
+  slice_max(order_by = case_cnt, n= 5, with_ties=FALSE) |>
+  arrange(desc(case_cnt), .by_group=TRUE) |> 
+  ungroup() |> 
+  ggplot(aes(x=fct_reorder(location, -case_cnt), label = case_cnt, y=case_cnt, fill='single')) +
+    geom_col(position='dodge') +
+    geom_text(position=position_dodge(width=0.9), vjust = -0.5, size = 2.5) +
+    theme_minimal() +
+    labs(x = 'Country', 
+         y = 'Case Counts\n(in 100k)', 
+           title = 'TOP 5 COUNTRIES BY COVID CASE COUNTS, 2020',
+         caption = "**Note**: Russia and UK counts are included within Europe.<br><br>**Source**: Hasell, J., Mathieu, E., Beltekian, D. *et al.* *Sci Data* 7, 345 (2020)."
+         ) +
+    scale_fill_brewer(palette="Dark2") +
+    theme(legend.position='None', 
+          panel.grid = element_blank(), 
+          axis.text.y=element_blank(),
+          axis.title.y=element_text(vjust=0.5),
+          axis.text.x=element_text(size=7, angle = 90, hjust = 1, vjust = 0.5),
+          axis.title.x=element_text(vjust = 2),
+          plot.margin = margin(t = 5, r = 10, b = 4, l = 10),
+          text = element_text(family="Palantino"),
+          plot.caption=ggtext::element_markdown(hjust = 0, size=8)
+          ) +
+    facet_wrap(vars(continent), scales="free_x") +
+    scale_y_continuous(expand=c(0, 80))
+```
+
+This was harder to plot but it shares many aesthetic elements from chart 1.
+
+## Chart 3 - Comparison among items with one variable per iterm but several items within fewer categories
+
+```{r plot3, warning=FALSE}
+owidall |>
+  filter(year(date)==2020 & continent %in% c('North America', 'South America')) |> 
+  group_by(continent, location) |> 
+  summarise(case_cnt=round(sum(new_cases, na.rm=TRUE)/10^5, 1), 
+            .groups = 'drop') |>
+  filter(case_cnt > 0) |> 
+  # group_by(continent) |> 
+  # slice_max(order_by = case_cnt, n= 5, with_ties=FALSE) |>
+  # arrange(desc(case_cnt), .by_group=TRUE) |> 
+  # ungroup() |> 
+  ggplot(aes(y=fct_reorder(location, -case_cnt), label = case_cnt, x=case_cnt, 
+             fill='single')) +
+    geom_col(position='dodge') +
+    geom_text(position=position_dodge(width=0.9), hjust = -0.3, size = 3) +
+    theme_minimal() +
+    labs(y = 'Country', 
+         x = 'Total Counts (in 100k)', 
+           title = 'COVID CASE COUNTS IN THE AMERICAS, 2020',
+         caption = "**Source**: Hasell, J., Mathieu, E., Beltekian, D. *et al.* *Sci Data* 7, 345 (2020)."
+         ) +
+    scale_fill_brewer(palette="Dark2") +
+    theme(legend.position='None', 
+          panel.grid = element_blank(), 
+          axis.text.x=element_blank(),
+          axis.title.x=element_text(vjust=1),
+          axis.text.y=element_text(size=7, hjust = 1, vjust = 0.5),
+          axis.title.y=element_text(vjust = 2),
+          plot.margin = margin(t = 5, r = 10, b = 4, l = 30),
+          plot.title = element_text(hjust=-0.9),
+          text = element_text(family="Palantino"),
+          plot.caption=ggtext::element_markdown(hjust = 0, size=8)
+          ) +
+    facet_wrap(vars(continent), scales="free_y") +
+    scale_x_continuous(expand=c(0, 80))
+```
+
+## Chart 4 - Comparison among items with one variable per iterm but fewer items within fewer categories
+
+```{r plot4, warning=FALSE}
+owidall |>
+  filter(year(date)==2020 & continent %in% c('North America', 'South America')) |> 
+  group_by(continent, location) |> 
+  summarise(case_cnt=round(sum(new_cases, na.rm=TRUE)/10^5, 1), 
+            .groups = 'drop') |>
+  group_by(continent) |> 
+  slice_max(order_by = case_cnt, n= 5, with_ties=FALSE) |>
+  arrange(desc(case_cnt), .by_group=TRUE) |> 
+  mutate(Rank=row_number(), 
+         continent=factor(continent, levels = c('North America', 'South America')),
+         location=factor(location, levels = unique(location))
+         ) |> 
+  ungroup() |> 
+  ggplot(aes(x=location, label = case_cnt, y=case_cnt, fill=continent)) +
+    geom_col(position='dodge') +
+    facet_grid(. ~ Rank, switch = 'both', scales = 'free_x') +
+    geom_text(position=position_dodge(width=0.9), vjust = -0.5, size = 3) +
+    theme_minimal() +
+    labs(x = 'Country', 
+         y = 'Case Counts\n(in 100k)', 
+           title = 'TOP 5 COUNTRIES BY COVID CASE COUNTS IN THE AMERICAS, 2020',
+         caption = "**Source**: Hasell, J., Mathieu, E., Beltekian, D. *et al.* *Sci Data* 7, 345 (2020)."
+         ) +
+    scale_fill_brewer(palette="Dark2") +
+    theme(legend.position='None', 
+          panel.grid = element_blank(), 
+          axis.text.y=element_blank(),
+          axis.title.y=element_text(vjust=0.5),
+          axis.text.x=element_text(angle = 90, hjust = 1, vjust = 0.5),
+          axis.title.x=element_text(vjust = 2),
+          plot.margin = margin(t = 5, r = 10, b = 4, l = 10),
+          plot.title = element_text(hjust = -0.8),
+          text = element_text(family="Palantino"),
+          plot.caption=ggtext::element_markdown(hjust = 0, size=8)
+          ) +
+    scale_y_continuous(expand=c(0, 50))
+```
+
+
+Use of `facet_grid` unfortunately makes more lose control of some theme elements. Specifically, I lost control over the Rank numbers. I'd like to put those closer to the x axis but I can't shift the secondary axis anymore. 
