@@ -75,5 +75,12 @@
     "title": "Assignment 4",
     "section": "Chart 4 - Comparison among items with one variable per iterm but fewer items within fewer categories",
     "text": "Chart 4 - Comparison among items with one variable per iterm but fewer items within fewer categories\n\nowidall |&gt;\n  filter(year(date)==2020 & continent %in% c('North America', 'South America')) |&gt; \n  group_by(continent, location) |&gt; \n  summarise(case_cnt=round(sum(new_cases, na.rm=TRUE)/10^5, 1), \n            .groups = 'drop') |&gt;\n  group_by(continent) |&gt; \n  slice_max(order_by = case_cnt, n= 5, with_ties=FALSE) |&gt;\n  arrange(desc(case_cnt), .by_group=TRUE) |&gt; \n  mutate(Rank=row_number(), \n         continent=factor(continent, levels = c('North America', 'South America')),\n         location=factor(location, levels = unique(location))\n         ) |&gt; \n  ungroup() |&gt; \n  ggplot(aes(x=location, label = case_cnt, y=case_cnt, fill=continent)) +\n    geom_col(position='dodge') +\n    facet_grid(. ~ Rank, switch = 'both', scales = 'free_x') +\n    geom_text(position=position_dodge(width=0.9), vjust = -0.5, size = 3) +\n    theme_minimal() +\n    labs(x = 'Country', \n         y = 'Case Counts\\n(in 100k)', \n           title = 'TOP 5 COUNTRIES BY COVID CASE COUNTS IN THE AMERICAS, 2020',\n         caption = \"**Source**: Hasell, J., Mathieu, E., Beltekian, D. *et al.* *Sci Data* 7, 345 (2020).\"\n         ) +\n    scale_fill_brewer(palette=\"Dark2\") +\n    theme(legend.position='None', \n          panel.grid = element_blank(), \n          axis.text.y=element_blank(),\n          axis.title.y=element_text(vjust=0.5),\n          axis.text.x=element_text(angle = 90, hjust = 1, vjust = 0.5),\n          axis.title.x=element_text(vjust = 2),\n          plot.margin = margin(t = 5, r = 10, b = 4, l = 10),\n          plot.title = element_text(hjust = -0.8),\n          text = element_text(family=\"Palantino\"),\n          plot.caption=ggtext::element_markdown(hjust = 0, size=8)\n          ) +\n    scale_y_continuous(expand=c(0, 50))\n\n\n\n\n\n\n\n\nUse of facet_grid unfortunately makes more lose control of some theme elements. Specifically, I lost control over the Rank numbers. I’d like to put those closer to the x axis but I can’t shift the secondary axis anymore."
+  },
+  {
+    "objectID": "project.html",
+    "href": "project.html",
+    "title": "Project",
+    "section": "",
+    "text": "Proposal presentation\n\n\n\nSlides"
   }
 ]

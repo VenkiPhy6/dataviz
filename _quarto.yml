@@ -9,6 +9,7 @@ website:
       - href: index.qmd
         text: Home
       - assignments.qmd
+      - project.qmd
 
 format:
   html:

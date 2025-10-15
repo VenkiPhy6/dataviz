@@ -1,0 +1,7 @@
+---
+title: "Project"
+---
+
+# Proposal presentation
+
+![](assets/subramanian_prop_present.pdf){width=640px height=480px}
