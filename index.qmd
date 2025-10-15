@@ -2,6 +2,6 @@
 title: "Venki's website for Data Viz (EPPS 6356) class"
 ---
 
-My assignments are under the Assignments tab. 
+My assignments are under the Assignments tab. Outputs related to the project are under the projects tab. 
 
 Thanks for visiting!
