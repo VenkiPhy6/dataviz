@@ -1,0 +1,78 @@
+---
+title: "Project CO2 Dashboard"
+output: 
+  flexdashboard::flex_dashboard:
+    theme:
+      bg: "white"
+      fg: "black" 
+      primary: "black"
+      base_font:
+        google: Prompt
+      code_font:
+        google: Fira Code
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+# Install thematic and un-comment for themed static plots (i.e., ggplot2)
+# thematic::thematic_rmd()
+```
+
+Column {data-width=650 .tabset}
+-----------------------------------------------------------------------
+
+### Chart A: Iris Dataset Scatterplot
+
+```{r}
+par(family="Palatino")
+plot(iris, col="steelblue", cex=.8, pch=20)
+```
+
+### Chart B: Patent Applications
+
+```{r}
+# Table for Patent Applications
+patent_applications <- data.frame(
+  Country = c("China", "United States", "Japan", "South Korea", "Germany", 
+              "France", "India", "United Kingdom", "Switzerland", "Netherlands"),
+  Applications = c(1586339, 515281, 406374, 272675, 157652, 
+                   66446, 56396, 54620, 51445, 32738)
+)
+
+knitr::kable(patent_applications, caption = "Top 10 Countries by Patent Applications 2022")
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart C: Trademark Classes
+
+```{r}
+trademark_classes <- data.frame(
+  Country = c("China", "Germany", "United States", "France", "Italy",
+              "United Kingdom", "Spain", "Netherlands", "Turkey", "Japan"),
+  Classes = c(8561984, 2552542, 2009487, 1194182, 
+              1178542, 1093675, 789031, 582247, 579543, 549015)
+)
+
+knitr::kable(trademark_classes, caption = "Top 10 Countries by Trademark Classes")
+```
+
+### Chart D: Industrial Designs
+
+```{r}
+industrial_designs <- data.frame(
+  Country = c("China", "Germany", "Italy", "United States", 
+              "France", "Poland", "United Kingdom", 
+              "Spain", "Switzerland", "South Korea"),
+  Designs = c(1408921, 489507, 369347, 
+              366686, 217619, 155846,
+              131371, 118365, 
+              116156, 103174)
+)
+
+knitr::kable(industrial_designs, caption = "Top 10 Countries by Industrial Designs")
+```
+
