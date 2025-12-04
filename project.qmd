@@ -9,3 +9,7 @@ title: "Project"
 # Proposal document
 
 ![](assets/subramanian_proposal.pdf){width=640px height=480px}
+
+# Final presentation
+
+![](assets/subramanian_finalprop.pdf){width=640px height=480px}
